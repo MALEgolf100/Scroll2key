@@ -2,12 +2,11 @@ package net.malegolf100.scroll2keymod;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.minecraft.client.KeyMapping;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Player;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,23 +16,24 @@ public class Scroll2key implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("scroll2key");
 
 	// New keybinding category for Scroll2Key
-	private static final KeyBinding.Category SCROLL_KEY_CATEGORY = KeyBinding.Category.create(Identifier.of("scroll2key", "main"));
+	private static final KeyMapping.Category SCROLL_KEY_CATEGORY =
+			KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "main"));
 
 	// Right scroll key
-	private static final KeyBinding keyBindingRight = KeyBindingHelper.registerKeyBinding(
-			new KeyBinding(
+	private static final KeyMapping keyBindingRight = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping(
 					"key.scroll2keymod.scroll_right",
-					InputUtil.Type.KEYSYM,
+					InputConstants.Type.KEYSYM,
 					GLFW.GLFW_KEY_RIGHT_BRACKET,
 					SCROLL_KEY_CATEGORY
 			)
 	);
 
 	// Left scroll key
-	private static final KeyBinding keyBindingLeft = KeyBindingHelper.registerKeyBinding(
-			new KeyBinding(
+	private static final KeyMapping keyBindingLeft = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping(
 					"key.scroll2keymod.scroll_left",
-					InputUtil.Type.KEYSYM,
+					InputConstants.Type.KEYSYM,
 					GLFW.GLFW_KEY_LEFT_BRACKET,
 					SCROLL_KEY_CATEGORY
 			)
@@ -47,39 +47,29 @@ public class Scroll2key implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Initializing Scroll2Key mod!");
 
-		// Register client tick event listener
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
-			if (keyBindingRight.isPressed() && !keyRightPressed) {
-				scrollHotbarRight();
+			if (client.player == null) return;
+			Player player = client.player;
+
+			if (keyBindingRight.isDown() && !keyRightPressed) {
+				scrollHotbar(player, 1);
 				keyRightPressed = true;
-			} else if (!keyBindingRight.isPressed()) {
+			} else if (!keyBindingRight.isDown()) {
 				keyRightPressed = false;
 			}
 
-			if (keyBindingLeft.isPressed() && !keyLeftPressed) {
-				scrollHotbarLeft();
+			if (keyBindingLeft.isDown() && !keyLeftPressed) {
+				scrollHotbar(player, -1);
 				keyLeftPressed = true;
-			} else if (!keyBindingLeft.isPressed()) {
+			} else if (!keyBindingLeft.isDown()) {
 				keyLeftPressed = false;
 			}
 		});
 	}
 
-	private void scrollHotbarRight() {
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-		if (player != null) {
-			int currentSlot = player.getInventory().getSelectedSlot();
-			int nextSlot = (currentSlot + 1) % 9;
-			player.getInventory().setSelectedSlot(nextSlot);
-		}
-	}
-
-	private void scrollHotbarLeft() {
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-		if (player != null) {
-			int currentSlot = player.getInventory().getSelectedSlot();
-			int prevSlot = (currentSlot - 1 + 9) % 9;
-			player.getInventory().setSelectedSlot(prevSlot);
-		}
+	private void scrollHotbar(Player player, int direction) {
+		int currentSlot = player.getInventory().getSelectedSlot();
+		int nextSlot = (currentSlot + direction + 9) % 9;
+		player.getInventory().setSelectedSlot(nextSlot);
 	}
 }
