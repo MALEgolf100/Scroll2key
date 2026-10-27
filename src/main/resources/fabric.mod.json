@@ -5,13 +5,13 @@
 	"name": "scroll2key",
 	"description": "Adds keybinds for scrolling threw your hotbar!",
 	"authors": [
-		"MALEgolf100"
+		"BasilCrafter"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
-	"license": "CC0-1.0",
+	"license": "",
 	"icon": "assets/scroll2key/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -24,7 +24,7 @@
 	},
 	"depends": {
 		"fabricloader": ">=0.19.3",
-		"minecraft": ">=26.1",
+		"minecraft": ">=26.3",
 		"java": ">=21",
 		"fabric-api": "*"
 	},

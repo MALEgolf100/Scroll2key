@@ -7,7 +7,6 @@ import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +22,8 @@ public class Scroll2key implements ModInitializer {
 	private static final KeyMapping keyBindingRight = KeyMappingHelper.registerKeyMapping(
 			new KeyMapping(
 					"key.scroll2keymod.scroll_right",
-					InputConstants.Type.KEYSYM,
-					GLFW.GLFW_KEY_RIGHT_BRACKET,
+					InputConstants.Type.KEYBOARD,
+					InputConstants.KEY_RBRACKET,
 					SCROLL_KEY_CATEGORY
 			)
 	);
@@ -33,8 +32,8 @@ public class Scroll2key implements ModInitializer {
 	private static final KeyMapping keyBindingLeft = KeyMappingHelper.registerKeyMapping(
 			new KeyMapping(
 					"key.scroll2keymod.scroll_left",
-					InputConstants.Type.KEYSYM,
-					GLFW.GLFW_KEY_LEFT_BRACKET,
+					InputConstants.Type.KEYBOARD,
+					InputConstants.KEY_LBRACKET,
 					SCROLL_KEY_CATEGORY
 			)
 	);
